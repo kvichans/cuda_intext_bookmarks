@@ -1,5 +1,5 @@
 [info]
-title=In-text Bookmarks
+title=In-text bookmarks
 desc=Allows to place bookmarks as text-comments (permanent bookmarks), and to navigate to them
 type=cudatext-plugin
 subdir=cuda_intext_bookmarks
@@ -7,14 +7,15 @@ homepage=https://github.com/kvichans/cuda_intext_bookmarks
 
 [item10]
 section=commands
-caption=In-te&xt Bookmarks\Add
-method=add_ibm
+caption=In-te&xt Bookmarks\List for current &tab
+method=dlg_ibms_in_tab
 ;menu=0
 
-[item20]
+[item11]
 section=commands
-caption=In-te&xt Bookmarks\-
-method=_
+caption=In-te&xt Bookmarks\List for a&ll tabs
+method=dlg_ibms_in_tabs
+;menu=0
 
 [item21]
 section=commands
@@ -28,22 +29,16 @@ caption=In-te&xt Bookmarks\Go to &previous
 method=prev_ibm
 ;menu=0
 
+
+[item30]
+section=commands
+caption=In-te&xt Bookmarks\-
+method=_
+
 [item31]
 section=commands
-caption=In-te&xt Bookmarks\Go to in current &tab
-method=dlg_ibms_in_tab
-;menu=0
-
-[item32]
-section=commands
-caption=In-te&xt Bookmarks\Go to in &tabs
-method=dlg_ibms_in_tabs
-;menu=0
-
-;[item33]
-;section=commands
-;caption=In-te&xt Bookmarks\Go to in &folder
-;method=dlg_ibms_in_dir
+caption=In-te&xt Bookmarks\&Config...
+method=dlg_config
 ;menu=0
 
 [item40]
@@ -53,6 +48,6 @@ method=_
 
 [item41]
 section=commands
-caption=In-te&xt Bookmarks\&Config
-method=dlg_config
+caption=In-te&xt Bookmarks\&Add
+method=add_ibm
 ;menu=0

@@ -30,7 +30,7 @@ class Command:
         self.show_wo_alt= apx.get_opt('ibm_compact_show', True)
 #       self.show_wo_alt= apx.get_opt('ibm_compact_show', False)
         self.unlxr_cmnt = apx.get_opt('ibm_no_lexer_comment', '//')
-        self.bm_signs   = apx.get_opt('ibm_signs'           , [_('NOTE:'), _('NB!'), _('TODO:'), _('FIX:')])
+        self.bm_signs   = apx.get_opt('ibm_signs'           , [_('NOTE:'), _('NB!'), _('TODO:'), _('todo:'), _('FIX:')])
         self.bm_signs   = [self.bm_signs] if type(self.bm_signs)==str else self.bm_signs
         self.bm_sign    = self.bm_signs[0]
         self.lxr2cmnt   = {NO_LXR_SIGN:self.unlxr_cmnt}
@@ -48,7 +48,8 @@ class Command:
     def add_ibm(self):
         lxr         = ed.get_prop(app.PROP_LEXER_FILE)
         lxr         = lxr if lxr else NO_LXR_SIGN
-        if lxr not in self.lxr2cmnt:    return app.msg_status(f(_('Cannot add in-text bookmark into document with Lexer {}. No to-end-of-line comment.'), lxr))
+#       if lxr not in self.lxr2cmnt:    return app.msg_status(f(_('Cannot add in-text bookmark into document with Lexer {}. No to-end-of-line comment.'), lxr))
+        if lxr not in self.lxr2cmnt:    return app.msg_status(f(_('Cannot add in-text bookmark: no line-comments defined for lexer {}.'), lxr))
         cmnt        = self.lxr2cmnt[lxr]
         bm_msg      = app.dlg_input(_('Enter message for in-text bookmark. Empty is good.'), '')
         if bm_msg is None:              return
