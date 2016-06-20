@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github.com)
 Version:
-    '0.8.0 2016-05-24'
+    '0.8.1 2016-06-20'
 ToDo: (see end of file)
 '''
 
@@ -26,11 +26,11 @@ _   = get_translation(__file__) # I18N
 NO_LXR_SIGN = _('(none)')
 class Command:
     def __init__(self):#NOTE: init
-        self.wrap       = apx.get_opt('ibm_wrap', True)
-        self.show_wo_alt= apx.get_opt('ibm_compact_show', True)
-#       self.show_wo_alt= apx.get_opt('ibm_compact_show', False)
-        self.unlxr_cmnt = apx.get_opt('ibm_no_lexer_comment', '//')
-        self.bm_signs   = apx.get_opt('ibm_signs'           , [_('NOTE:'), _('NB!'), _('TODO:'), _('todo:'), _('FIX:')])
+        self.wrap       = apx.get_opt('intextbookmk_wrap'            , apx.get_opt('ibm_wrap'            , True))
+        self.show_wo_alt= apx.get_opt('intextbookmk_compact_show'    , apx.get_opt('ibm_compact_show'    , True))
+#       self.show_wo_alt= apx.get_opt('intextbookmk_compact_show'    , apx.get_opt('ibm_compact_show'    , False))
+        self.unlxr_cmnt = apx.get_opt('intextbookmk_no_lexer_comment', apx.get_opt('ibm_no_lexer_comment', '//'))
+        self.bm_signs   = apx.get_opt('intextbookmk_signs'           , apx.get_opt('ibm_signs'           , ['NOTE:', 'NB!', 'TODO:', 'todo:', 'todo.', 'FIX:']))
         self.bm_signs   = [self.bm_signs] if type(self.bm_signs)==str else self.bm_signs
         self.bm_sign    = self.bm_signs[0]
         self.lxr2cmnt   = {NO_LXR_SIGN:self.unlxr_cmnt}
