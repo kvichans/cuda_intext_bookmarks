@@ -214,13 +214,13 @@ class Command:
                     continue#while
                 if  self.bm_signs  != vals['sgns'].split():
                     self.bm_signs   = vals['sgns'].split()
-                    apx.set_opt('ibm_signs', self.bm_signs)
+                    apx.set_opt('intextbookmk_signs', self.bm_signs)
                 if  self.unlxr_cmnt!= vals['dfcm'].strip():
                     self.unlxr_cmnt = vals['dfcm'].strip()
-                    apx.set_opt('ibm_no_lexer_comment', self.unlxr_cmnt)
+                    apx.set_opt('intextbookmk_no_lexer_comment', self.unlxr_cmnt)
                 if  self.wrap      != vals['wrap']:
                     self.wrap       = vals['wrap']
-                    apx.set_opt('ibm_wrap', self.wrap)
+                    apx.set_opt('intextbookmk_wrap', self.wrap)
                 break#while
            #while
        #def dlg_config
