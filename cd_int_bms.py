@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github.com)
 Version:
-    '0.8.1 2016-06-20'
+    '0.8.2 2017-07-12'
 ToDo: (see end of file)
 '''
 
@@ -15,7 +15,7 @@ import  cudax_lib           as apx
 from    .cd_plug_lib    import *
 
 #OrdDict = collections.OrderedDict
-#FROM_API_VERSION= '1.0.119'
+FROM_API_VERSION= '1.0.187'     # LEXER_GET_PROP
 
 pass;                           LOG = (-2==-2)  # Do or dont logging.
 pass;                           from pprint import pformat
@@ -26,6 +26,7 @@ _   = get_translation(__file__) # I18N
 NO_LXR_SIGN = _('(none)')
 class Command:
     def __init__(self):#NOTE: init
+        if app.app_api_version()<FROM_API_VERSION:  return app.msg_status(_('Need update application'))
         self.wrap       = apx.get_opt('intextbookmk_wrap'            , apx.get_opt('ibm_wrap'            , True))
         self.show_wo_alt= apx.get_opt('intextbookmk_compact_show'    , apx.get_opt('ibm_compact_show'    , True))
 #       self.show_wo_alt= apx.get_opt('intextbookmk_compact_show'    , apx.get_opt('ibm_compact_show'    , False))
@@ -36,12 +37,15 @@ class Command:
         self.lxr2cmnt   = {NO_LXR_SIGN:self.unlxr_cmnt}
         self.ext2lxr    = {}
         for lxr in apx.get_enabled_lexers():
-            cmnt                    = app.lexer_proc(app.LEXER_GET_COMMENT, lxr)
+            cmnt                    = app.lexer_proc(app.LEXER_GET_PROP, lxr)['c_line']
+#           cmnt                    = app.lexer_proc(app.LEXER_GET_COMMENT, lxr)
             if not cmnt:
                 continue#for lxr
             self.lxr2cmnt[lxr]      = cmnt
-            for ext in app.lexer_proc(app.LEXER_GET_EXT, lxr).split():
+            for ext in app.lexer_proc(app.LEXER_GET_PROP, lxr)['typ']:
                 self.ext2lxr[ext]   = lxr
+#           for ext in app.lexer_proc(app.LEXER_GET_EXT, lxr).split():
+#               self.ext2lxr[ext]   = lxr
            #for lxr
        #def __init__
 

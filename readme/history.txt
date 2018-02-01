@@ -1,3 +1,6 @@
+0.8.2 (2017-07-12)
+fixed: don't use deprecated API
+
 0.8.1 (2016-06-20)
 fixed: rename opts to "intextbookmk_*"
 
