@@ -29,17 +29,11 @@ caption=In-te&xt Bookmarks\Go to &previous
 method=prev_ibm
 ;menu=0
 
-
-[item30]
-section=commands
-caption=In-te&xt Bookmarks\-
-method=_
-
 [item31]
 section=commands
 caption=In-te&xt Bookmarks\&Config...
 method=dlg_config
-;menu=0
+menu=o
 
 [item40]
 section=commands
