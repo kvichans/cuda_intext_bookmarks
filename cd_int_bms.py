@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github.com)
 Version:
-    '0.8.2 2017-07-12'
+    '0.8.3 2020-04-22'
 ToDo: (see end of file)
 '''
 
@@ -78,7 +78,7 @@ class Command:
         line_ns = [line_n for (tab_id, line_n, bm_msg, line_s, tab_info) in ibms]
         if self.wrap:
             line_ns = [-line_ns[-1]] + line_ns + [line_ns[0]+0xFFFFFFFF]
-        line_cns= [line_n for line_n in line_ns
+        line_cns= [line_n for line_n in line_ns 
                     if (line_n>rCrt if what=='next' else line_n<rCrt)]
         if not line_cns:        return app.msg_status(_('No bookmark for jump'))
         line_n  = min(line_cns)         if what=='next'         else max(line_cns)
@@ -136,11 +136,11 @@ class Command:
         line_max= max([line_n for (tab_id, line_n, bm_msg, line_s, tab_info) in ibms])
         ln_wd   = len(str(line_max))
         pass;                  #LOG and log('ln_wd={}',(ln_wd))
-        ibms    = [(bm_msg, line_n, f('{} {}', str(1+line_n).rjust(ln_wd, ' '), line_s))
+        ibms    = [(bm_msg, line_n, f('{} {}', str(1+line_n).rjust(ln_wd, ' '), line_s)) 
                 for (tab_id, line_n, bm_msg, line_s, tab_info) in ibms]
         pass;                  #LOG and log('ibms=¶{}',pf(ibms))
         rCrt    = ed.get_carets()[0][1]
-        near    = min([(abs(line_n-rCrt), ind)
+        near    = min([(abs(line_n-rCrt), ind) 
                 for ind, (bm_msg, line_n, line_s) in enumerate(ibms)])[1]
         if self.show_wo_alt:
             ans = app.dlg_menu(app.MENU_LIST, '\n'.join(
@@ -159,7 +159,7 @@ class Command:
 
     def dlg_ibms_in_tabs(self):
         ibms    = []
-        for h_tab in app.ed_handles():
+        for h_tab in app.ed_handles(): 
             ted     = app.Editor(h_tab)
             t_ibms, \
             msg     = self._ibms_in_tab(ted, self.bm_signs)
@@ -168,11 +168,11 @@ class Command:
         if not ibms:    return app.msg_status(_('No in-text bookmarks in tabs'))
         line_max= max([line_n for (tab_id, line_n, bm_msg, line_s, tab_info) in ibms])
         ln_wd   = len(str(line_max))
-        ibms    = [(tab_id, line_n, bm_msg, f('{} {}', str(1+line_n).rjust(ln_wd, ' '), line_s), tab_info)
+        ibms    = [(tab_id, line_n, bm_msg, f('{} {}', str(1+line_n).rjust(ln_wd, ' '), line_s), tab_info) 
                     for (tab_id, line_n, bm_msg, line_s, tab_info) in ibms]
         tid     = ed.get_prop(app.PROP_TAB_ID)
         rCrt    = ed.get_carets()[0][1]
-        near    = min([(abs(line_n-rCrt) if tid==tab_id else 0xFFFFFF, ind)
+        near    = min([(abs(line_n-rCrt) if tid==tab_id else 0xFFFFFF, ind) 
                     for ind, (tab_id, line_n, bm_msg, line_s, tab_info) in enumerate(ibms)])[1]
         ans     = app.dlg_menu(app.MENU_LIST_ALT, '\n'.join(
                     [f('({}) {}\t{}', tab_info, bm_msg, line_s) for tab_id, line_n, bm_msg, line_s, tab_info in ibms]
@@ -190,17 +190,17 @@ class Command:
         DLG_W,  \
         DLG_H   = 400, 95
         lxrs_l  = apx.get_enabled_lexers()
-
+        
         sgns_h  = _('Space delimeted list.\rThe first word will be inserted by command.')
         dfcm_h  = _('Default comment sign.\rIt is used when lexer has no line comment or file has no lexer.')
         cnts    =[dict(           tp='lb'   ,tid='sgns' ,l=GAP          ,w=130          ,cap=_('&Bookmark signs:')  ,hint=sgns_h    ) # &b
-                 ,dict(cid='sgns',tp='ed'   ,t=GAP      ,l=130          ,w=DLG_W-130-GAP                                            ) #
-                 ,dict(           tp='lb'   ,tid='dfcm' ,l=GAP          ,w=130          ,cap=_('&Comment sign:')    ,hint=dfcm_h    ) # &c
-                 ,dict(cid='dfcm',tp='ed'   ,t=35       ,l=130          ,w=DLG_W-130-GAP                                            ) #
+                 ,dict(cid='sgns',tp='ed'   ,t=GAP      ,l=130          ,w=DLG_W-130-GAP                                            ) #  
+                 ,dict(           tp='lb'   ,tid='dfcm' ,l=GAP          ,w=130          ,cap=_('&Comment sign:')    ,hint=dfcm_h    ) # &c 
+                 ,dict(cid='dfcm',tp='ed'   ,t=35       ,l=130          ,w=DLG_W-130-GAP                                            ) #  
                  ,dict(cid='wrap',tp='ch'   ,tid='!'    ,l=GAP          ,w=120          ,cap=_('&Wrap for next/prev')               ) # &w
-#                ,dict(cid='help',tp='bt'   ,t=DLG_H-60 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Help')                              ) #
+#                ,dict(cid='help',tp='bt'   ,t=DLG_H-60 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Help')                              ) #  
                  ,dict(cid='!'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-165,w=80           ,cap=_('Save')          ,props='1'          ) #     default
-                 ,dict(cid='-'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Close')                             ) #
+                 ,dict(cid='-'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Close')                             ) #  
                 ]#NOTE: cfg
         focused = 'sgns'
         while True:
