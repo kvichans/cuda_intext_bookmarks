@@ -1,3 +1,7 @@
+0.8.3 (2020-04-17)
+add: Small change to meet this rule in Python PEP 8: E265 block comment should
+	start with '# '
+
 0.8.2 (2017-07-12)
 fixed: don't use deprecated API
 
