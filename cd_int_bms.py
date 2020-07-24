@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github.com)
 Version:
-    '0.8.3 2020-04-22'
+    '0.8.4 2020-07-24'
 ToDo: (see end of file)
 '''
 
@@ -22,6 +22,17 @@ pass;                           from pprint import pformat
 pass;                           pf=lambda d:pformat(d,width=150)
 
 _   = get_translation(__file__) # I18N
+
+def dlg_menu(how, its='', sel=0, cap='', clip=0, w=0, h=0):
+    api = app.app_api_version()
+#   if api<='1.0.193':  #  list/tuple, focused(?), caption
+#   if api<='1.0.233':  #  MENU_NO_FUZZY, MENU_NO_FULLFILTER
+#   if api<='1.0.275':  #  MENU_CENTERED
+    if api<='1.0.334':  #  clip, w, h
+        return  app.dlg_menu(how, its, focused=sel, caption=cap)
+#   if api<='1.0.346':  #  MENU_EDITORFONT
+    return      app.dlg_menu(how, its, focused=sel, caption=cap, clip=clip, w=w, h=h)
+   #def dlg_menu
 
 NO_LXR_SIGN = _('(none)')
 class Command:
@@ -107,7 +118,7 @@ class Command:
         tab_num = ted.get_prop(app.PROP_INDEX_TAB)
         tab_cap = ted.get_prop(app.PROP_TAB_TITLE)
         tab_id  = ted.get_prop(app.PROP_TAB_ID)
-        tab_info= f('{}:{}. {}', 1+tab_grp, 1+tab_num, tab_cap)
+        tab_info= f('{}:{}:{}', 1+tab_grp, 1+tab_num, tab_cap)
         signs   = [cmnt + sign + ' ' for sign in bm_signs]
 
         # 2020.04.17 Add more signs considering one space between cmnt and sign
@@ -136,20 +147,20 @@ class Command:
         line_max= max([line_n for (tab_id, line_n, bm_msg, line_s, tab_info) in ibms])
         ln_wd   = len(str(line_max))
         pass;                  #LOG and log('ln_wd={}',(ln_wd))
+        pass;                  #LOG and log('self.show_wo_alt={}',(self.show_wo_alt))
         ibms    = [(bm_msg, line_n, f('{} {}', str(1+line_n).rjust(ln_wd, ' '), line_s)) 
                 for (tab_id, line_n, bm_msg, line_s, tab_info) in ibms]
         pass;                  #LOG and log('ibms=¶{}',pf(ibms))
         rCrt    = ed.get_carets()[0][1]
         near    = min([(abs(line_n-rCrt), ind) 
                 for ind, (bm_msg, line_n, line_s) in enumerate(ibms)])[1]
-        if self.show_wo_alt:
-            ans = app.dlg_menu(app.MENU_LIST, '\n'.join(
-                    [f('{}\t{}', line_nd, bm_msg) for bm_msg, line_n, line_nd in ibms]
-                ), near)
-        else:
-            ans = app.dlg_menu(app.MENU_LIST_ALT, '\n'.join(
-                    [f('{}\t{}', bm_msg, line_nd) for bm_msg, line_n, line_nd in ibms]
-                ), near)
+        ans     = dlg_menu((app.MENU_LIST if self.show_wo_alt else app.MENU_LIST_ALT)+app.MENU_EDITORFONT
+                , w=900
+                , cap=f(_('Tab in-text bookmarks: {}'), len(ibms))
+                , its=[f('{}\t{}', line_nd, bm_msg) for bm_msg, line_n, line_nd in ibms]
+                        if self.show_wo_alt else
+                      [f('{}\t{}', bm_msg, line_nd) for bm_msg, line_n, line_nd in ibms]
+                , sel=near)
         if ans is None:     return
         bm_msg, line_n, line_nd    = ibms[ans]
         ed.set_caret(0, line_n)
@@ -174,9 +185,13 @@ class Command:
         rCrt    = ed.get_carets()[0][1]
         near    = min([(abs(line_n-rCrt) if tid==tab_id else 0xFFFFFF, ind) 
                     for ind, (tab_id, line_n, bm_msg, line_s, tab_info) in enumerate(ibms)])[1]
-        ans     = app.dlg_menu(app.MENU_LIST_ALT, '\n'.join(
-                    [f('({}) {}\t{}', tab_info, bm_msg, line_s) for tab_id, line_n, bm_msg, line_s, tab_info in ibms]
-                ), near)
+        ans     = dlg_menu((app.MENU_LIST if self.show_wo_alt else app.MENU_LIST_ALT)++app.MENU_EDITORFONT+app.MENU_CENTERED
+                , w=900, h=800 
+                , cap=f(_('In-text bookmarks (all tabs): {}'), len(ibms))
+                , its=[f('({}) {}'    , tab_info, bm_msg)         for tab_id, line_n, bm_msg, line_s, tab_info in ibms]
+                         if self.show_wo_alt else 
+                      [f('({}) {}\t{}', tab_info, bm_msg, line_s) for tab_id, line_n, bm_msg, line_s, tab_info in ibms]
+                , sel=near)
         if ans is None: return
         tab_id, line_n, bm_msg, line_s, tab_info    = ibms[ans]
         ted     = apx.get_tab_by_id(tab_id)
@@ -188,7 +203,7 @@ class Command:
 
     def dlg_config(self):
         DLG_W,  \
-        DLG_H   = 400, 95
+        DLG_H   = 400, 95+30
         lxrs_l  = apx.get_enabled_lexers()
         
         sgns_h  = _('Space delimeted list.\rThe first word will be inserted by command.')
@@ -197,8 +212,9 @@ class Command:
                  ,dict(cid='sgns',tp='ed'   ,t=GAP      ,l=130          ,w=DLG_W-130-GAP                                            ) #  
                  ,dict(           tp='lb'   ,tid='dfcm' ,l=GAP          ,w=130          ,cap=_('&Comment sign:')    ,hint=dfcm_h    ) # &c 
                  ,dict(cid='dfcm',tp='ed'   ,t=35       ,l=130          ,w=DLG_W-130-GAP                                            ) #  
-                 ,dict(cid='wrap',tp='ch'   ,tid='!'    ,l=GAP          ,w=120          ,cap=_('&Wrap for next/prev')               ) # &w
+                 ,dict(cid='walt',tp='ch'   ,t=70       ,l=GAP          ,w=120          ,cap=_('Compac&t list')                     ) # &t
 #                ,dict(cid='help',tp='bt'   ,t=DLG_H-60 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Help')                              ) #  
+                 ,dict(cid='wrap',tp='ch'   ,tid='!'    ,l=GAP          ,w=120          ,cap=_('&Wrap for next/prev')               ) # &w
                  ,dict(cid='!'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-165,w=80           ,cap=_('Save')          ,props='1'          ) #     default
                  ,dict(cid='-'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Close')                             ) #  
                 ]#NOTE: cfg
@@ -208,6 +224,7 @@ class Command:
                 , dict(sgns=' '.join(self.bm_signs)
                       ,dfcm=         self.unlxr_cmnt
                       ,wrap=         self.wrap
+                      ,walt=         self.show_wo_alt
                       ), focus_cid=focused)
             if act_cid is None or act_cid=='-':    return#while True
             focused = chds[0] if 1==len(chds) else focused
@@ -229,6 +246,9 @@ class Command:
                 if  self.wrap      != vals['wrap']:
                     self.wrap       = vals['wrap']
                     apx.set_opt('intextbookmk_wrap', self.wrap)
+                if  self.show_wo_alt!=vals['walt']:
+                    self.show_wo_alt= vals['walt']
+                    apx.set_opt('intextbookmk_compact_show', self.show_wo_alt)
                 break#while
            #while
        #def dlg_config
