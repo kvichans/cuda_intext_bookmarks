@@ -174,9 +174,9 @@ class Tr :
             Tr.se_fmt       = '{:'+str(3+Tr.sec_digs)+'.'+str(Tr.sec_digs)+'f}"'
             Tr.mise_fmt     = "{:2d}'"+Tr.se_fmt
             Tr.homise_fmt   = "{:2d}h"+Tr.mise_fmt
-        h = int( secs / 3600 )
+        h = secs // 3600
         secs = secs % 3600
-        m = int( secs / 60 )
+        m = secs // 60
         s = secs % 60
         return Tr.se_fmt.format(s) \
                 if 0==h+m else \
@@ -231,7 +231,7 @@ def get_desktop_environment():
         return "mac"
     else: #Most likely either a POSIX system or something not much common
         desktop_session = os.environ.get("DESKTOP_SESSION")
-        if desktop_session is not None: #easier to match if we doesn't have  to deal with caracter cases
+        if desktop_session is not None: #easier to match if we doesn't have  to deal with character cases
             desktop_session = desktop_session.lower()
             if desktop_session in ["gnome","unity", "cinnamon", "mate", "xfce4", "lxde", "fluxbox", 
                                    "blackbox", "openbox", "icewm", "jwm", "afterstep","trinity", "kde"]:
@@ -290,9 +290,9 @@ ENV2FITS= {'win':
             ,'button'     :-4
             ,'combo_ro'   :-5
             ,'combo'      :-6
-            ,'checkbutton':-3
+            ,'checkbutton':-4
             ,'linklabel'  : 0
-            ,'spinedit'   :-5
+            ,'spinedit'   :-6
             }
           ,'mac':
             {'check'      :-1
@@ -419,9 +419,14 @@ def dlg_wrapper(title, w, h, cnts, in_vals={}, focus_cid=None):
             
         lst     = ['type='+tp]
         # Simple props
-        for k in ['cap', 'hint', 'props']:
+        for k in ['cap', 'hint']:
             if k in cnt:
                 lst += [k+'='+str(cnt[k])]
+        # Alexey: support 'ex0'..'ex9'
+        if 'props' in cnt:
+            props = cnt['props'].split(',')
+            for p_i, p_s in enumerate(props):
+                lst += ['ex'+str(p_i)+'='+p_s]
         # Props with preparation
         # Position:
         #   t[op] or tid, l[eft] required
@@ -518,7 +523,7 @@ def dlg_wrapper(title, w, h, cnts, in_vals={}, focus_cid=None):
            #in_val = ','.join(in_val)
         elif tp in ['checklistbox', 'checklistview'] and isinstance(in_val, tuple):
             an_val = an_val.split(';')
-            an_val = (an_val[0], an_val[1].split(','))
+            an_val = (an_val[0], an_val[1].strip(',').split(','))
            #in_val = ';'.join(in_val[0], ','.join(in_val[1]))
         elif isinstance(in_val, bool): 
             an_val = an_val=='1'
