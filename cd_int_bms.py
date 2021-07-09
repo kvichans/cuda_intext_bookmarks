@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github.com)
 Version:
-    '0.8.4 2020-07-24'
+    '0.8.5 2021-07-09'
 ToDo: (see end of file)
 '''
 
@@ -154,7 +154,7 @@ class Command:
         rCrt    = ed.get_carets()[0][1]
         near    = min([(abs(line_n-rCrt), ind) 
                 for ind, (bm_msg, line_n, line_s) in enumerate(ibms)])[1]
-        ans     = dlg_menu((app.MENU_LIST if self.show_wo_alt else app.MENU_LIST_ALT)+app.MENU_EDITORFONT
+        ans     = dlg_menu((app.DMENU_LIST if self.show_wo_alt else app.DMENU_LIST_ALT)+app.DMENU_EDITORFONT
                 , w=900
                 , cap=f(_('Tab in-text bookmarks: {}'), len(ibms))
                 , its=[f('{}\t{}', line_nd, bm_msg) for bm_msg, line_n, line_nd in ibms]
@@ -185,7 +185,7 @@ class Command:
         rCrt    = ed.get_carets()[0][1]
         near    = min([(abs(line_n-rCrt) if tid==tab_id else 0xFFFFFF, ind) 
                     for ind, (tab_id, line_n, bm_msg, line_s, tab_info) in enumerate(ibms)])[1]
-        ans     = dlg_menu((app.MENU_LIST if self.show_wo_alt else app.MENU_LIST_ALT)++app.MENU_EDITORFONT+app.MENU_CENTERED
+        ans     = dlg_menu((app.DMENU_LIST if self.show_wo_alt else app.DMENU_LIST_ALT)+app.DMENU_EDITORFONT+app.DMENU_CENTERED
                 , w=900, h=800 
                 , cap=f(_('In-text bookmarks (all tabs): {}'), len(ibms))
                 , its=[f('({}) {}'    , tab_info, bm_msg)         for tab_id, line_n, bm_msg, line_s, tab_info in ibms]
