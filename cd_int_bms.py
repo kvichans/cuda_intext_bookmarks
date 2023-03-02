@@ -47,18 +47,13 @@ class Command:
         self.bm_signs   = [self.bm_signs] if type(self.bm_signs)==str else self.bm_signs
         self.bm_sign    = self.bm_signs[0]
         self.lxr2cmnt   = {NO_LXR_SIGN:self.unlxr_cmnt}
-        self.ext2lxr    = {}
         for lxr in apx.get_enabled_lexers():
             lxrprop                 = app.lexer_proc(app.LEXER_GET_PROP, lxr)
+            # take line comment, if it's absent - take stream comment
             cmnt                    = lxrprop['c_line'] or lxrprop['c_str']
-#           cmnt                    = app.lexer_proc(app.LEXER_GET_COMMENT, lxr)
             if not cmnt:
-                continue#for lxr
+                continue #for lxr
             self.lxr2cmnt[lxr]      = cmnt
-            for ext in lxrprop['typ']:
-                self.ext2lxr[ext]   = lxr
-#           for ext in app.lexer_proc(app.LEXER_GET_EXT, lxr).split():
-#               self.ext2lxr[ext]   = lxr
            #for lxr
        #def __init__
 
