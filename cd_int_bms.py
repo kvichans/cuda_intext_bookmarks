@@ -229,7 +229,7 @@ class Command:
                 ]#NOTE: cfg
         focused = 'sgns'
         while True:
-            act_cid, vals, chds = dlg_wrapper(_('In-text bookmarks'), DLG_W, DLG_H, cnts
+            act_cid, vals, chds = dlg_wrapper(_('Intext bookmarks'), DLG_W, DLG_H, cnts
                 , dict(sgns=' '.join(self.bm_signs)
                       ,dfcm=         self.unlxr_cmnt
                       ,wrap=         self.wrap
