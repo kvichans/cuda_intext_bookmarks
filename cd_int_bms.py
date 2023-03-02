@@ -224,8 +224,8 @@ class Command:
                  ,dict(cid='walt',tp='ch'   ,t=70       ,l=GAP          ,w=120          ,cap=_('Compac&t list')                     ) # &t
 #                ,dict(cid='help',tp='bt'   ,t=DLG_H-60 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Help')                              ) #  
                  ,dict(cid='wrap',tp='ch'   ,tid='!'    ,l=GAP          ,w=120          ,cap=_('&Wrap for next/prev')               ) # &w
-                 ,dict(cid='!'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-165,w=80           ,cap=_('Save')          ,props='1'          ) #     default
-                 ,dict(cid='-'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Close')                             ) #  
+                 ,dict(cid='!'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-165,w=80           ,cap=_('OK')                ,props='1'      ) #     default
+                 ,dict(cid='-'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Cancel')                            ) #  
                 ]#NOTE: cfg
         focused = 'sgns'
         while True:
