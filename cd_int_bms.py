@@ -38,7 +38,7 @@ def dlg_menu(how, its='', sel=0, cap='', clip=0, w=0, h=0):
 NO_LXR_SIGN = _('(none)')
 class Command:
     def __init__(self):#NOTE: init
-        if app.app_api_version()<FROM_API_VERSION:  return app.msg_status(_('Need update application'))
+        if app.app_api_version()<FROM_API_VERSION:  return app.msg_status(_('Need to update application'))
         self.wrap       = apx.get_opt('intextbookmk_wrap'            , apx.get_opt('ibm_wrap'            , True))
         self.show_wo_alt= apx.get_opt('intextbookmk_compact_show'    , apx.get_opt('ibm_compact_show'    , True))
 #       self.show_wo_alt= apx.get_opt('intextbookmk_compact_show'    , apx.get_opt('ibm_compact_show'    , False))
