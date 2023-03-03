@@ -1,6 +1,6 @@
 [info]
-title=In-text bookmarks
-desc=Allows to place bookmarks as text-comments (permanent bookmarks), and to navigate to them
+title=Intext bookmarks
+desc=Allows to place bookmarks as text comments (ie "permanent" bookmarks), and to navigate to them
 type=cudatext-plugin
 subdir=cuda_intext_bookmarks
 homepage=https://github.com/kvichans/cuda_intext_bookmarks
