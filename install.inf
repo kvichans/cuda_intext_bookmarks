@@ -1,47 +1,47 @@
 [info]
-title=In-text bookmarks
-desc=Allows to place bookmarks as text-comments (permanent bookmarks), and to navigate to them
+title=Intext bookmarks
+desc=Allows to place bookmarks as text comments (ie "permanent" bookmarks), and to navigate to them
 type=cudatext-plugin
 subdir=cuda_intext_bookmarks
 homepage=https://github.com/kvichans/cuda_intext_bookmarks
 
 [item10]
 section=commands
-caption=In-te&xt Bookmarks\List for current &tab
+caption=Inte&xt Bookmarks\List for current &tab...
 method=dlg_ibms_in_tab
 ;menu=0
 
 [item11]
 section=commands
-caption=In-te&xt Bookmarks\List for a&ll tabs
+caption=Inte&xt Bookmarks\List for a&ll tabs...
 method=dlg_ibms_in_tabs
 ;menu=0
 
 [item21]
 section=commands
-caption=In-te&xt Bookmarks\Go to &next
+caption=Inte&xt Bookmarks\Go to &next
 method=next_ibm
 ;menu=0
 
 [item22]
 section=commands
-caption=In-te&xt Bookmarks\Go to &previous
+caption=Inte&xt Bookmarks\Go to &previous
 method=prev_ibm
 ;menu=0
 
 [item31]
 section=commands
-caption=In-te&xt Bookmarks\&Config...
+caption=Inte&xt Bookmarks\&Config...
 method=dlg_config
 menu=o
 
 [item40]
 section=commands
-caption=In-te&xt Bookmarks\-
+caption=Inte&xt Bookmarks\-
 method=_
 
 [item41]
 section=commands
-caption=In-te&xt Bookmarks\&Add
+caption=Inte&xt Bookmarks\&Add...
 method=add_ibm
 ;menu=0

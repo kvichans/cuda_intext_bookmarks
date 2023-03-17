@@ -1,8 +1,9 @@
 ﻿''' Plugin for CudaText editor
 Authors:
     Andrey Kvichansky    (kvichans on github.com)
+    Alexey Torgashin (CudaText)
 Version:
-    '0.8.5 2021-07-09'
+    '0.8.6 2023-03-02'
 ToDo: (see end of file)
 '''
 
@@ -37,7 +38,7 @@ def dlg_menu(how, its='', sel=0, cap='', clip=0, w=0, h=0):
 NO_LXR_SIGN = _('(none)')
 class Command:
     def __init__(self):#NOTE: init
-        if app.app_api_version()<FROM_API_VERSION:  return app.msg_status(_('Need update application'))
+        if app.app_api_version()<FROM_API_VERSION:  return app.msg_status(_('Need to update application'))
         self.wrap       = apx.get_opt('intextbookmk_wrap'            , apx.get_opt('ibm_wrap'            , True))
         self.show_wo_alt= apx.get_opt('intextbookmk_compact_show'    , apx.get_opt('ibm_compact_show'    , True))
 #       self.show_wo_alt= apx.get_opt('intextbookmk_compact_show'    , apx.get_opt('ibm_compact_show'    , False))
@@ -46,17 +47,13 @@ class Command:
         self.bm_signs   = [self.bm_signs] if type(self.bm_signs)==str else self.bm_signs
         self.bm_sign    = self.bm_signs[0]
         self.lxr2cmnt   = {NO_LXR_SIGN:self.unlxr_cmnt}
-        self.ext2lxr    = {}
         for lxr in apx.get_enabled_lexers():
-            cmnt                    = app.lexer_proc(app.LEXER_GET_PROP, lxr)['c_line']
-#           cmnt                    = app.lexer_proc(app.LEXER_GET_COMMENT, lxr)
+            lxrprop                 = app.lexer_proc(app.LEXER_GET_PROP, lxr)
+            # take line comment, if it's absent - take stream comment
+            cmnt                    = lxrprop['c_line'] or lxrprop['c_str']
             if not cmnt:
-                continue#for lxr
+                continue #for lxr
             self.lxr2cmnt[lxr]      = cmnt
-            for ext in app.lexer_proc(app.LEXER_GET_PROP, lxr)['typ']:
-                self.ext2lxr[ext]   = lxr
-#           for ext in app.lexer_proc(app.LEXER_GET_EXT, lxr).split():
-#               self.ext2lxr[ext]   = lxr
            #for lxr
        #def __init__
 
@@ -64,14 +61,18 @@ class Command:
         lxr         = ed.get_prop(app.PROP_LEXER_FILE)
         lxr         = lxr if lxr else NO_LXR_SIGN
 #       if lxr not in self.lxr2cmnt:    return app.msg_status(f(_('Cannot add in-text bookmark into document with Lexer {}. No to-end-of-line comment.'), lxr))
-        if lxr not in self.lxr2cmnt:    return app.msg_status(f(_('Cannot add in-text bookmark: no line-comments defined for lexer {}.'), lxr))
+        if lxr not in self.lxr2cmnt:    return app.msg_status(f(_('Cannot add in-text bookmark: no comments defined for lexer {}.'), lxr))
         cmnt        = self.lxr2cmnt[lxr]
         bm_msg      = app.dlg_input(_('Enter message for in-text bookmark. Empty is good.'), '')
         if bm_msg is None:              return
         (cCrt, rCrt
         ,cEnd, rEnd)= ed.get_carets()[0]
-        line_s      = ed.get_text_line( rCrt)
-        ed.set_text_line(               rCrt, line_s + cmnt + self.bm_sign + ' ' + bm_msg)
+        line_s      = ed.get_text_line(rCrt)
+        if isinstance(cmnt, str):
+            text = line_s + ' ' + cmnt + self.bm_sign + ' ' + bm_msg
+        elif isinstance(cmnt, (tuple, list)):
+            text = line_s + ' ' + cmnt[0] + self.bm_sign + ' ' + bm_msg + cmnt[1]
+        ed.set_text_line(rCrt, text)
        #def add_ibm
 
     def next_ibm(self):
@@ -119,10 +120,15 @@ class Command:
         tab_cap = ted.get_prop(app.PROP_TAB_TITLE)
         tab_id  = ted.get_prop(app.PROP_TAB_ID)
         tab_info= f('{}:{}:{}', 1+tab_grp, 1+tab_num, tab_cap)
-        signs   = [cmnt + sign + ' ' for sign in bm_signs]
 
-        # 2020.04.17 Add more signs considering one space between cmnt and sign
-        signs += [cmnt + ' ' + sign + ' ' for sign in bm_signs]
+        signs = []
+        if isinstance(cmnt, str):
+            signs += [cmnt + sign + ' ' for sign in bm_signs]
+            # Add more signs considering one space between cmnt and sign
+            signs += [cmnt + ' ' + sign + ' ' for sign in bm_signs]
+        elif isinstance(cmnt, (tuple, list)):
+            signs += [cmnt[0] + sign + ' ' for sign in bm_signs]
+            signs += [cmnt[0] + ' ' + sign + ' ' for sign in bm_signs]
 
         pass;                  #LOG and log('signs={}',(signs))
         ibms    = []
@@ -132,6 +138,9 @@ class Command:
                 if sign in line_s:
                     line_s  = line_s.replace('\t', tab_sps)
                     bm_msg  = line_s[line_s.index(sign)+len(sign):]
+                    if isinstance(cmnt, (tuple, list)):
+                        if bm_msg.endswith(cmnt[1]):
+                            bm_msg = bm_msg[:-len(cmnt[1])]
                     ibms   += [(tab_id, line_n, bm_msg, line_s, tab_info)]
                     break#for sign
                #for sign
@@ -215,12 +224,12 @@ class Command:
                  ,dict(cid='walt',tp='ch'   ,t=70       ,l=GAP          ,w=120          ,cap=_('Compac&t list')                     ) # &t
 #                ,dict(cid='help',tp='bt'   ,t=DLG_H-60 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Help')                              ) #  
                  ,dict(cid='wrap',tp='ch'   ,tid='!'    ,l=GAP          ,w=120          ,cap=_('&Wrap for next/prev')               ) # &w
-                 ,dict(cid='!'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-165,w=80           ,cap=_('Save')          ,props='1'          ) #     default
-                 ,dict(cid='-'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Close')                             ) #  
+                 ,dict(cid='!'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-165,w=80           ,cap=_('OK')                ,props='1'      ) #     default
+                 ,dict(cid='-'   ,tp='bt'   ,t=DLG_H-30 ,l=DLG_W-GAP-80 ,w=80           ,cap=_('Cancel')                            ) #  
                 ]#NOTE: cfg
         focused = 'sgns'
         while True:
-            act_cid, vals, chds = dlg_wrapper(_('In-text bookmarks'), DLG_W, DLG_H, cnts
+            act_cid, vals, chds = dlg_wrapper(_('Intext bookmarks'), DLG_W, DLG_H, cnts
                 , dict(sgns=' '.join(self.bm_signs)
                       ,dfcm=         self.unlxr_cmnt
                       ,wrap=         self.wrap

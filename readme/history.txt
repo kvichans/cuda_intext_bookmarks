@@ -1,6 +1,9 @@
+0.8.6 (2023-03-02)
+added: support stream comments too, e.g. in lexer CSS (by Alexey T.)
+
 0.8.4 (2020-07-24)
 added: Add option "Compact list" in options dialog 
-fixed: Set monowidth font for lists with bookmarks
+fixed: Set monospaced font for lists with bookmarks
 
 0.8.3 (2020-04-22)
 added: Add one space between cmnt and sign (thanks Jairo-Martinez)
